@@ -1,8 +1,12 @@
-# Getting Started
+# file-paging
 
-### Reference Documentation
-For further reference, please consider the following sections:
+### file-paging介绍
+file-paging是将文件按大小【比如1024byte】进行分页显示的demo，当你找到这个仓库的时候，说明你也有这种鬼需求了。不用担心，看完demo你就知道如何处理了
 
-* [Official Apache Maven documentation](https://maven.apache.org/guides/index.html)
-* [Spring Boot Maven Plugin Reference Guide](https://docs.spring.io/spring-boot/docs/2.2.1.RELEASE/maven-plugin/)
+### file-paging实现介绍
+实现文件按照大小进行分页的**难点**主要有：
+- 文件如何读取指定大小，比如一次只读1024byte的内容
+- 文件按照大小读取出现的乱码问题，比如读取5byte，文件内容为:a中文，在UTF-8编码下该内容为7byte，读取5byte的内容为5中?，即会出现中文乱码的问题
 
+### file-paging使用
+                  
