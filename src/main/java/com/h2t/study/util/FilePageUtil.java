@@ -29,6 +29,7 @@ public class FilePageUtil {
      * 分页
      *
      * @param filePath 文件路径
+     * @return
      */
     public static FilePage page(String filePath) throws IOException {
         File file = new File(filePath);
@@ -48,8 +49,10 @@ public class FilePageUtil {
         int judgeLength;
         int pageSize = 1;
         Map<Integer, String> pageResult = new HashMap<>();
-        byte[] judgeBuffer = new byte[BYTE_SIZE];
-        while ((judgeLength = judgeFis.read(judgeBuffer)) != -1) {
+        byte[] judgeBuffer;
+        int size = BYTE_SIZE;
+        while ((judgeBuffer = allocateByte(size)).length > 0 && (judgeLength = judgeFis.read(judgeBuffer)) != -1) {
+            System.out.println("size: " + judgeBuffer.length);
             int readLength;
             String pageContent;
             String str = new String(new String(judgeBuffer, 0, judgeLength));
@@ -57,13 +60,16 @@ public class FilePageUtil {
             byte[] bytes = str.getBytes();
             //末尾是中文出现乱码
             if (bytes[bytes.length - 1] < 0) {
+                size = BYTE_SIZE - 3;
                 byte[] readBuffer = new byte[BYTE_SIZE - 3];
                 readLength = readFis.read(readBuffer);
                 pageContent = new String(readBuffer, 0, readLength);
             } else {
                 //未出现乱码不需要-3
-                readLength = readFis.read(judgeBuffer);
-                pageContent = new String(judgeBuffer, 0, readLength);
+                byte[] bytes1 = new byte[BYTE_SIZE];
+                size = BYTE_SIZE;
+                readLength = readFis.read(bytes1);
+                pageContent = new String(bytes1, 0, readLength);
             }
 
             pageResult.put(pageSize, pageContent);
@@ -73,11 +79,20 @@ public class FilePageUtil {
 
         FilePage filePage = new FilePage();
         long fileSize = file.length(); //总的文件大小，单位为kb
-        long pages = fileSize / BYTE_SIZE + 1;  //总的分页数量
+        //long pages = fileSize / BYTE_SIZE + 1;  //总的分页数量 【这样计算值不准确】
         filePage.setPageResult(pageResult);
         filePage.setFileSize(fileSize);
-        filePage.setPages(pages);
+        filePage.setPages(Long.valueOf(pageSize - 1));
         return filePage;
     }
 
+    /**
+     * 动态分配缓冲区大小
+     *
+     * @param size 缓冲区大小
+     * @return
+     */
+    private static byte[] allocateByte(int size) {
+        return new byte[size];
+    }
 }
