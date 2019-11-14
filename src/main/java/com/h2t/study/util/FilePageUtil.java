@@ -52,7 +52,6 @@ public class FilePageUtil {
         byte[] judgeBuffer;
         int size = BYTE_SIZE;
         while ((judgeBuffer = allocateByte(size)).length > 0 && (judgeLength = judgeFis.read(judgeBuffer)) != -1) {
-            System.out.println("size: " + judgeBuffer.length);
             int readLength;
             String pageContent;
             String str = new String(new String(judgeBuffer, 0, judgeLength));
