@@ -13,7 +13,7 @@ file-paging是将文件按大小【比如1024byte】进行分页显示的demo，
 为了解决回退读的内容，实现思路是使用两个流去读写同一个文件，其中一个流用于判断是否出现乱码，另外一个流用于读取内容，出现乱码读取内容的流就少读取三个字节。同时，两个流读取到流的位置需一致，不能相差3byte*N，为了解决这个问题判断是否出现乱码的流每次动态调整缓冲区的大小，如果上次出现乱码，则下一次读取流的缓冲区需要少三字节，并且需要根据条件复位不能每次都少读三个字节，如果下一次读取的内容不出现乱码则进行复位
 
 ### file-paging使用
-`service`层封装`FilePageUtil`即可，`FilePageUtil`返回一个`FilePage`对象，`FilePage`对象包含文件大小、文件分页的数量，以及一个map，存放了页码和页码内容的映射，`service`层只需对这个对象进行处理就可以了，可以参考`FilePageServiceImpl`实现类
+service层封装FilePageUtil即可，FilePageUtil返回一个FilePage对象，FilePage对象包含文件大小、文件分页的数量，以及一个map，存放了页码和页码内容的映射，service层只需对这个对象进行处理就可以了，可以参考FilePageServiceImpl实现类
 ### file-paging缺点
 - 重复读取文件两次，IO较高
 - 每次重新分配缓冲区，内存较为浪费
